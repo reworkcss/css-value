@@ -14,16 +14,16 @@ Parser.prototype.skip = function(m){
 };
 
 Parser.prototype.number = function(){
-  var m = /^(\d+)(\w+)? */.exec(this.str);
+  var m = /^((\d+)(\w+)?) */.exec(this.str);
   if (!m) return;
   this.skip(m);
-  var n = ~~m[1];
-  var u = m[2];
+  var n = ~~m[2];
+  var u = m[3];
 
   return {
     type: 'number',
-    string: n + u,
-    unit: u,
+    string: m[1],
+    unit: u || '',
     value: n
   }
 };
