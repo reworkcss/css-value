@@ -39,7 +39,7 @@ Parser.prototype.int = function(){
 };
 
 Parser.prototype.float = function(){
-  var m = /^((\d+)?(\.\d+)(\S+)?) */.exec(this.str);
+  var m = /^(((?:\d+)?\.\d+)(\S+)?) */.exec(this.str);
   if (!m) return;
   this.skip(m);
   var n = parseFloat(m[2]);
