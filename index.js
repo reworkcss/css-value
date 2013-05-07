@@ -17,7 +17,7 @@ Parser.prototype.comma = function(){
   var m = /^, */.exec(this.str);
   if (!m) return;
   this.skip(m);
-  return { type: ',' };
+  return { type: 'comma', string: ',' };
 };
 
 Parser.prototype.ident = function(){
