@@ -13,9 +13,16 @@ Parser.prototype.skip = function(m){
   this.str = this.str.slice(m[0].length);
 };
 
+Parser.prototype.comma = function(){
+  var m = /^, */.exec(this.str);
+  if (!m) return;
+  this.skip(m);
+  return { type: ',' };
+};
+
 Parser.prototype.ident = function(){
   var m = /^([\w-]+) */.exec(this.str);
-  if (!m) return m;
+  if (!m) return;
   this.skip(m);
   return {
     type: 'ident',
@@ -89,7 +96,8 @@ Parser.prototype.string = function(){
 Parser.prototype.value = function(){
   return this.number()
     || this.ident()
-    || this.string();
+    || this.string()
+    || this.comma();
 };
 
 Parser.prototype.parse = function(){
