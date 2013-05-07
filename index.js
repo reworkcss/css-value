@@ -38,9 +38,39 @@ Parser.prototype.number = function(){
   }
 };
 
+Parser.prototype.double = function(){
+  var m = /^"([^"]*)" */.exec(this.str);
+  if (!m) return m;
+  this.skip(m);
+  return {
+    type: 'string',
+    quote: '"',
+    string: '"' + m[1] + '"',
+    value: m[1]
+  }
+};
+
+Parser.prototype.single = function(){
+  var m = /^'([^']*)' */.exec(this.str);
+  if (!m) return m;
+  this.skip(m);
+  return {
+    type: 'string',
+    quote: "'",
+    string: "'" + m[1] + "'",
+    value: m[1]
+  }
+};
+
+Parser.prototype.string = function(){
+  return this.single() || this.double();
+};
+
+
 Parser.prototype.value = function(){
   return this.number()
-    || this.ident();
+    || this.ident()
+    || this.string();
 };
 
 Parser.prototype.parse = function(){
