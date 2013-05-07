@@ -23,7 +23,7 @@ Parser.prototype.ident = function(){
   }
 };
 
-Parser.prototype.number = function(){
+Parser.prototype.int = function(){
   var m = /^((\d+)(\w+)?) */.exec(this.str);
   if (!m) return;
   this.skip(m);
@@ -36,6 +36,25 @@ Parser.prototype.number = function(){
     unit: u || '',
     value: n
   }
+};
+
+Parser.prototype.float = function(){
+  var m = /^((\d+)?(\.\d+)(\w+)?) */.exec(this.str);
+  if (!m) return;
+  this.skip(m);
+  var n = parseFloat(m[2]);
+  var u = m[3];
+
+  return {
+    type: 'number',
+    string: m[1],
+    unit: u || '',
+    value: n
+  }
+};
+
+Parser.prototype.number = function(){
+  return this.float() || this.int();
 };
 
 Parser.prototype.double = function(){
