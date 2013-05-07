@@ -1,4 +1,6 @@
 
+var parse = require('..');
+
 var fs = require('fs');
 var readdir = fs.readdirSync;
 var path = require('path');
@@ -9,7 +11,8 @@ readdir('test/cases').forEach(function(file){
   var title = basename(file, '.js');
   describe(title, function(){
     it('should work', function(){
-
+      var ret = parse(mod.string);
+      ret.should.eql(mod.object);
     })
   });
 });

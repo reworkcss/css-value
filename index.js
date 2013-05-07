@@ -1,2 +1,6 @@
 
-module.exports = require('./lib/css-value');
+module.exports = parse;
+
+function parse(str) {
+
+}
