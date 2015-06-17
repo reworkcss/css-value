@@ -92,9 +92,19 @@ Parser.prototype.string = function(){
   return this.single() || this.double();
 };
 
+Parser.prototype.color = function(){
+  var m = /^(rgba?\([^)]*\)) */.exec(this.str);
+  if (!m) return m;
+  this.skip(m);
+  return {
+    type: 'color',
+    value: m[1]
+  }
+};
 
 Parser.prototype.value = function(){
   return this.number()
+    || this.color()
     || this.ident()
     || this.string()
     || this.comma();
