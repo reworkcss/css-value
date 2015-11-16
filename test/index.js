@@ -1,5 +1,6 @@
 
 var parse = require('..');
+var should = require('should');
 
 var fs = require('fs');
 var readdir = fs.readdirSync;
