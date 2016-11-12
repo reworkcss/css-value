@@ -2,7 +2,8 @@
 module.exports = parse;
 
 function parse(str) {
-  return new Parser(str).parse();
+  var cleanStr = str.replace(/^\s+|\s+$/, '');
+  return new Parser(cleanStr).parse();
 }
 
 function Parser(str) {
