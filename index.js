@@ -103,6 +103,16 @@ Parser.prototype.color = function(){
   }
 };
 
+Parser.prototype.url = function(){
+  var m = /^(url\([^)]*\)) */.exec(this.str);
+  if (!m) return m;
+  this.skip(m[0]);
+  return {
+    type: 'url',
+    value: m[1]
+  }
+};
+
 function readToMatchingParen(str) {
   if(str[0] !== '(') {
     throw new Error('expected opening paren');
@@ -147,6 +157,7 @@ Parser.prototype.value = function(){
   return this.number()
     || this.color()
     || this.gradient()
+    || this.url()
     || this.ident()
     || this.string()
     || this.comma();
