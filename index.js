@@ -11,20 +11,20 @@ function Parser(str) {
 }
 
 Parser.prototype.skip = function(m){
-  this.str = this.str.slice(m[0].length);
+  this.str = this.str.slice(m.length);
 };
 
 Parser.prototype.comma = function(){
   var m = /^, */.exec(this.str);
   if (!m) return;
-  this.skip(m);
+  this.skip(m[0]);
   return { type: 'comma', string: ',' };
 };
 
 Parser.prototype.ident = function(){
   var m = /^([\w-]+) */.exec(this.str);
   if (!m) return;
-  this.skip(m);
+  this.skip(m[0]);
   return {
     type: 'ident',
     string: m[1]
@@ -34,7 +34,7 @@ Parser.prototype.ident = function(){
 Parser.prototype.int = function(){
   var m = /^((\d+)(\S+)?) */.exec(this.str);
   if (!m) return;
-  this.skip(m);
+  this.skip(m[0]);
   var n = ~~m[2];
   var u = m[3];
 
@@ -49,7 +49,7 @@ Parser.prototype.int = function(){
 Parser.prototype.float = function(){
   var m = /^(((?:\d+)?\.\d+)(\S+)?) */.exec(this.str);
   if (!m) return;
-  this.skip(m);
+  this.skip(m[0]);
   var n = parseFloat(m[2]);
   var u = m[3];
 
@@ -68,7 +68,7 @@ Parser.prototype.number = function(){
 Parser.prototype.double = function(){
   var m = /^"([^"]*)" */.exec(this.str);
   if (!m) return m;
-  this.skip(m);
+  this.skip(m[0]);
   return {
     type: 'string',
     quote: '"',
@@ -80,7 +80,7 @@ Parser.prototype.double = function(){
 Parser.prototype.single = function(){
   var m = /^'([^']*)' */.exec(this.str);
   if (!m) return m;
-  this.skip(m);
+  this.skip(m[0]);
   return {
     type: 'string',
     quote: "'",
@@ -96,16 +96,56 @@ Parser.prototype.string = function(){
 Parser.prototype.color = function(){
   var m = /^(rgba?\([^)]*\)) */.exec(this.str);
   if (!m) return m;
-  this.skip(m);
+  this.skip(m[0]);
   return {
     type: 'color',
     value: m[1]
   }
 };
 
+function readToMatchingParen(str) {
+  if(str[0] !== '(') {
+    throw new Error('expected opening paren');
+  }
+
+  var opens = 0;
+  for(var i = 0; i < str.length; i++) {
+    if(str[i] === '(') {
+      opens++;
+    }
+    else if(str[i] === ')') {
+      opens--;
+    }
+
+    if(opens === 0) {
+      break;
+    }
+  }
+
+  if(opens !== 0) {
+    throw new Error('Failed parsing: No matching paren');
+  }
+
+  return str.slice(0, i + 1);
+}
+
+Parser.prototype.gradient = function(){
+  var m = /^linear-gradient/.exec(this.str);
+  if (!m) return m;
+  this.skip(m[0]);
+
+  var gradientStr = readToMatchingParen(this.str);
+  this.skip(gradientStr);
+  return {
+    type: 'gradient',
+    value: m[0] + gradientStr
+  }
+};
+
 Parser.prototype.value = function(){
   return this.number()
     || this.color()
+    || this.gradient()
     || this.ident()
     || this.string()
     || this.comma();
