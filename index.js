@@ -143,6 +143,7 @@ Parser.prototype.gradient = function(){
 };
 
 Parser.prototype.value = function(){
+  this.str = this.str.replace(/^\s+/, '');
   return this.number()
     || this.color()
     || this.gradient()
