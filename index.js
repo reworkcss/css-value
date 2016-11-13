@@ -21,6 +21,13 @@ Parser.prototype.comma = function(){
   return { type: 'comma', string: ',' };
 };
 
+Parser.prototype.operator = function(){
+  var m = /^\/ */.exec(this.str);
+  if (!m) return;
+  this.skip(m[0]);
+  return { type: 'operator', value: '/' };
+};
+
 Parser.prototype.ident = function(){
   var m = /^([\w-]+) */.exec(this.str);
   if (!m) return;
@@ -32,7 +39,7 @@ Parser.prototype.ident = function(){
 };
 
 Parser.prototype.int = function(){
-  var m = /^((\d+)(\S+)?) */.exec(this.str);
+  var m = /^((\d+)([^\s\/]+)?) */.exec(this.str);
   if (!m) return;
   this.skip(m[0]);
   var n = ~~m[2];
@@ -47,7 +54,7 @@ Parser.prototype.int = function(){
 };
 
 Parser.prototype.float = function(){
-  var m = /^(((?:\d+)?\.\d+)(\S+)?) */.exec(this.str);
+  var m = /^(((?:\d+)?\.\d+)([^\s\/]+)?) */.exec(this.str);
   if (!m) return;
   this.skip(m[0]);
   var n = parseFloat(m[2]);
@@ -154,7 +161,8 @@ Parser.prototype.gradient = function(){
 
 Parser.prototype.value = function(){
   this.str = this.str.replace(/^\s+/, '');
-  return this.number()
+  return this.operator()
+    || this.number()
     || this.color()
     || this.gradient()
     || this.url()
