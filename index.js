@@ -39,7 +39,7 @@ Parser.prototype.ident = function(){
 };
 
 Parser.prototype.int = function(){
-  var m = /^((\d+)([^\s\/]+)?) */.exec(this.str);
+  var m = /^((-?\d+)([^\s\/]+)?) */.exec(this.str);
   if (!m) return;
   this.skip(m[0]);
   var n = ~~m[2];
@@ -54,7 +54,7 @@ Parser.prototype.int = function(){
 };
 
 Parser.prototype.float = function(){
-  var m = /^(((?:\d+)?\.\d+)([^\s\/]+)?) */.exec(this.str);
+  var m = /^((-?(?:\d+)?\.\d+)([^\s\/]+)?) */.exec(this.str);
   if (!m) return;
   this.skip(m[0]);
   var n = parseFloat(m[2]);
