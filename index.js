@@ -147,7 +147,7 @@ function readToMatchingParen(str) {
 }
 
 Parser.prototype.gradient = function(){
-  var m = /^linear-gradient/.exec(this.str);
+  var m = /^(radial|linear)-gradient/.exec(this.str);
   if (!m) return m;
   this.skip(m[0]);
 
